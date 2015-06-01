@@ -1,0 +1,80 @@
+#!/bin/bash
+# /etc/init.d/kube-controller-manager
+#
+# Startup script for kube-controller-manager
+#
+# chkconfig 2345 20 80
+# description: Starts and stops kube-controller-manager
+
+. /etc/rc.d/init.d/functions
+
+prog="kube-controller-manager"
+prog_bin="/usr/bin/kube-controller-manager"
+controller_config="/etc/kubernetes/controller-manager"
+config="/etc/kubernetes/config"
+desc="controller manager of kubernetes"
+
+
+if ! [ -f $prog_bin ]; then
+    echo "$prog_bin binary not found."
+    exit 5
+fi
+
+if [ -f $controller_config ]; then
+    . $controller_config
+else
+    echo "No controller manager config file found in /etc/kubernetes... exiting"
+    exit 5
+fi
+
+if [ -f $config ]; then
+    . $config
+else
+    echo "No kubernetes config file found in /etc/kubernetes... exiting"
+    exit 5
+fi
+
+start() {
+    echo "Starting $desc ($prog): "
+    $prog_bin \
+        ${KUBE_LOGTOSTDERR} \
+        ${KUBE_LOG_LEVEL} \
+        ${KUBELET_ADDRESSES} \
+        ${KUBE_MASTER} \
+        ${KUBE_CONTROLLER_MANAGER_ARGS} >> /var/log/messages 2>&1 &
+    RETVAL=$?
+    return $RETVAL
+}
+
+stop() {
+    echo "Shutting down $desc ($prog): "
+    pkill -f $prog_bin
+}
+
+restart() {
+    stop
+    start
+}
+
+status() {
+    if [ -z $pid ]; then
+        pid=$(pgrep -f $prog_bin)
+    fi
+
+    if [ -z $pid ]; then
+        echo "$prog is NOT running."
+        return 1
+    else
+        echo "$prog is running (pid is $pid)"
+    fi
+}
+
+case "$1" in
+    start)   start;;
+    stop)    stop;;
+    restart) restart;;
+    status)  status;;
+    *)       echo "Usage: $0 {start|stop|restart|status}"
+             RETVAL=2;;
+esac
+exit $RETVAL

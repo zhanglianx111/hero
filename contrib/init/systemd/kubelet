@@ -1,0 +1,86 @@
+#!/bin/bash
+# /etc/init.d/kubelet
+#
+# Startup script for kubelet
+#
+# chkconfig 2345 20 80
+# description: Starts and stops for kubelet
+
+. /etc/rc.d/init.d/functions
+
+prog="kubelet"
+prog_bin="/usr/bin/kubelet"
+kubelet_config="/etc/kubernetes/kubelet"
+config="/etc/kubernetes/config"
+desc="minion of kubernetes kubelet"
+
+if ! [ -f $prog_bin ]; then
+    echo "$prog_bin binary not found."
+    exit 5
+fi
+
+
+if [ -f $kubelet_config ]; then
+    . $kubelet_config
+else
+    echo "No kubelet config file in /etc/kubernetes... exiting"
+    exit 5
+fi
+
+
+if [ -f $config ]; then
+    . $config
+else
+    echo "No kubernetes config file in /etc/kubernetes... exiting"
+    exit 5
+fi
+
+start() {
+    echo "Starting $desc ($prog): "
+    $prog_bin \
+        ${KUBE_LOGTOSTDERR} \
+        ${KUBE_LOG_LEVEL} \
+        ${KUBELET_API_SERVER} \
+        ${KUBELET_ADDRESS} \
+        ${KUBELET_PORT} \
+        ${KUBELET_HOSTNAME} \
+        ${KUBE_ALLOW_PRIV} \
+        ${KUBELET_ARGS} >> /var/log/messages 2>&1 &
+    RETVAL=$?
+    return $RETVAL
+}
+
+stop() {
+    echo "Shutting down $desc ($prog)"
+    pkill -f $prog_bin
+}
+
+restart() {
+    stop
+    start
+}
+
+status() {
+    if [ -z $pid ]; then
+        pid=$(pgrep -f $prog_bin)
+    fi
+
+
+    if [ -z $pid ]; then
+        echo "$prog is NOT running."
+        return 1
+    else
+        echo "$prog is running (pid is $pid)"
+    fi
+}
+
+case "$1" in
+    start)   start;;
+    stop)    stop;;
+    restart) restart;;
+    status)  status;;
+    *)       echo "Usage: $0 {start|stop|restart|status}"
+             RETVAL=2;;
+esac
+exit $RETVAL
+
