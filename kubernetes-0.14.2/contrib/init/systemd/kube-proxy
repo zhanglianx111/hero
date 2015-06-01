@@ -6,7 +6,7 @@
 # chkconfig 2345 20 80
 # description: Starts and stop kube-proxy
 
-. /etc/init.d/functions
+. /etc/rc.d/init.d/functions
 
 prog="kube-proxy"
 prog_bin="/usr/bin/kube-proxy"

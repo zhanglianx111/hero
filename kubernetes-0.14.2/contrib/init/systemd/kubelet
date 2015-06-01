@@ -6,7 +6,7 @@
 # chkconfig 2345 20 80
 # description: Starts and stops for kubelet
 
-. /etc/init.d/functions
+. /etc/rc.d/init.d/functions
 
 prog="kubelet"
 prog_bin="/usr/bin/kubelet"

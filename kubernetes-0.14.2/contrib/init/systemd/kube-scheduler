@@ -6,7 +6,7 @@
 # chkconfig 2345 20 80
 # description: Starts and stops kube-scheduler
 
-. /etc/init.d/functions
+. /etc/rc.d/init.d/functions
 
 prog="scheduler"
 prog_bin="/usr/bin/kube-scheduler"

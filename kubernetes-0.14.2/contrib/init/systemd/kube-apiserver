@@ -6,7 +6,7 @@
 # chkconfig: 2345 20 80
 # description: Starts and stops kube-apiserver
 
-. /etc/init.d/functions
+. /etc/rc.d/init.d/functions
 
 prog="kube-apiserver"
 prog_bin="/usr/bin/kube-apiserver"
