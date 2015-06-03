@@ -93,3 +93,7 @@ We also have the [google-containers Google Groups mailing list](https://groups.g
 
 If you are a company and are looking for a more formal engagement with Google around Kubernetes and containers at Google as a whole, please fill out [this form](https://docs.google.com/a/google.com/forms/d/1_RfwC8LZU4CKe4vKq32x5xpEJI5QZ-j0ShGmZVv9cm4/viewform) and we'll be in touch.
 
+## 基于版本
+commit id:f5582e8b99a11f9f15cc83bff8bf276270e15e80
+version: release-v0.14
+
